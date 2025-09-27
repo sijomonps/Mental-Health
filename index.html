@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perception Gap - Mental Health Check-in</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fffaf0; /* Warm, happy off-white */
+        }
+        .app-container {
+            min-height: 100vh;
+            color: #4a5568; /* Softer text color */
+        }
+        .card {
+            background-color: white;
+            border-radius: 2rem; /* More rounded */
+            box-shadow: 0 20px 40px -10px rgba(251, 146, 60, 0.15);
+            padding: 2.5rem 3rem;
+            max-width: 550px;
+            width: 90%;
+            margin: 2rem auto;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid #fff;
+        }
+        .main-button {
+            background: linear-gradient(to right, #f59e0b, #ef4444); /* Yellow to Red gradient */
+            color: white;
+            font-weight: 700;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.125rem;
+            box-shadow: 0 4px 20px 0 rgba(245, 158, 11, 0.4);
+        }
+        .main-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px 0 rgba(245, 158, 11, 0.3);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 10px;
+            background: #f1f5f9;
+            outline: none;
+            transition: opacity .2s;
+            border-radius: 5px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: white;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid #f59e0b; /* Happy orange */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: white;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid #f59e0b;
+        }
+        .hidden-view {
+            display: none;
+        }
+        .link-box {
+            background-color: #fffbeb;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            word-wrap: break-word;
+            border: 2px dashed #fcd34d;
+            color: #d97706;
+            font-weight: 500;
+        }
+        .label-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .slider-value {
+            font-weight: 800;
+            color: #f59e0b; /* Happy orange */
+            font-size: 1.5rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+            line-height: 2.75rem;
+            font-weight: 800; /* Extra bold */
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        p.subtitle {
+            color: #475569;
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 1.125rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .question-group {
+            margin-bottom: 2.5rem;
+        }
+        .word-button {
+            background-color: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem 1.25rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 0.375rem;
+            font-weight: 500;
+        }
+        .word-button.selected {
+            background-color: #f59e0b; /* Happy orange */
+            color: white;
+            border-color: #f59e0b;
+            transform: scale(1.05);
+            font-weight: 700;
+        }
+        .results-section {
+            background-color: #f8fafc;
+            border: 1px solid #eef2f7;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .kind-word-item {
+            background-color: #fffbeb; /* Light yellow */
+            color: #b45309; /* Dark yellow */
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 640px) {
+            .card {
+                padding: 2rem 1.5rem;
+                width: 95%;
+            }
+            h1 {
+                font-size: 2rem;
+                line-height: 2.25rem;
+            }
+            p.subtitle {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+            .label-container label {
+                font-size: 0.875rem;
+            }
+            .slider-value {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body class="app-container flex items-center justify-center">
+
+    <!-- App Container -->
+    <div id="app" class="w-full">
+        
+        <!-- ======================= -->
+        <!--  VIEW 1: CREATE PAGE    -->
+        <!-- ======================= -->
+        <div id="create-view" class="card">
+            <h1>How are you feeling today?</h1>
+            <p class="subtitle">A quick, private check-in to see your vibe. Then, share a link to see what your friends think!</p>
+
+            <form id="self-assessment-form">
+                <div class="mb-8">
+                    <label for="user-name" class="font-medium text-slate-700 text-lg">Your First Name</label>
+                    <input type="text" id="user-name" placeholder="E.g., Alex" required>
+                </div>
+
+                <!-- Happiness -->
+                <div class="question-group">
+                    <div class="label-container">
+                        <label for="self-happiness" class="font-medium text-slate-700">😊 Your Happiness</label>
+                        <span id="self-happiness-value" class="slider-value">50%</span>
+                    </div>
+                    <input type="range" id="self-happiness" min="0" max="100" value="50">
+                </div>
+                
+                <!-- Energy -->
+                <div class="question-group">
+                    <div class="label-container">
+                        <label for="self-energy" class="font-medium text-slate-700">⚡️ Your Energy</label>
+                        <span id="self-energy-value" class="slider-value">50%</span>
+                    </div>
+                    <input type="range" id="self-energy" min="0" max="100" value="50">
+                </div>
+
+                <!-- Stress -->
+                <div class="question-group">
+                    <div class="label-container">
+                        <label for="self-stress" class="font-medium text-slate-700">🧘 Your Stress Level</label>
+                        <span id="self-stress-value" class="slider-value">50%</span>
+                    </div>
+                    <input type="range" id="self-stress" min="0" max="100" value="50">
+                </div>
+
+                <button type="submit" class="main-button mt-6">Generate Share Link</button>
+            </form>
+
+            <div id="link-generation-section" class="hidden-view mt-8 text-center">
+                <h2 class="text-center">Your Link is Ready!</h2>
+                <p class="subtitle text-sm">Share this with friends. Return to this page anytime to view your results.</p>
+                <div id="share-link-box" class="link-box text-center text-sm"></div>
+                <button id="copy-link-button" class="w-full mt-4 bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-lg">Copy Link</button>
+                <button id="view-results-from-create" class="w-full mt-3 main-button">View My Results &rarr;</button>
+            </div>
+        </div>
+
+
+        <!-- ======================= -->
+        <!-- VIEW 2: FRIEND'S PAGE -->
+        <!-- ======================= -->
+        <div id="friend-view" class="card hidden-view">
+            <h1>How is <span id="friend-view-name" class="text-amber-500">...</span> doing?</h1>
+            <p class="subtitle">Your friend wants your perspective on their well-being. Your answers are anonymous.</p>
+            
+            <form id="friend-assessment-form">
+                <!-- Happiness -->
+                 <div class="question-group">
+                    <div class="label-container">
+                        <label for="friend-happiness" class="font-medium text-slate-700">😊 Their Perceived Happiness</label>
+                        <span id="friend-happiness-value" class="slider-value">50%</span>
+                    </div>
+                    <input type="range" id="friend-happiness" min="0" max="100" value="50">
+                </div>
+                
+                <!-- Energy -->
+                <div class="question-group">
+                    <div class="label-container">
+                        <label for="friend-energy" class="font-medium text-slate-700">⚡️ Their Perceived Energy</label>
+                        <span id="friend-energy-value" class="slider-value">50%</span>
+                    </div>
+                    <input type="range" id="friend-energy" min="0" max="100" value="50">
+                </div>
+
+                <!-- Stress -->
+                <div class="question-group">
+                    <div class="label-container">
+                        <label for="friend-stress" class="font-medium text-slate-700">🧘 Their Perceived Stress Level</label>
+                        <span id="friend-stress-value" class="slider-value">50%</span>
+                    </div>
+                    <input type="range" id="friend-stress" min="0" max="100" value="50">
+                </div>
+
+                 <div class="question-group">
+                    <label class="font-medium text-slate-700 block mb-2 text-lg">Which word best describes their vibe?</label>
+                    <div id="vibe-words-container" class="flex flex-wrap justify-center">
+                        <button type="button" class="word-button">☀️ Sunny</button>
+                        <button type="button" class="word-button">🧘‍♀️ Calm</button>
+                        <button type="button" class="word-button">🤔 Thoughtful</button>
+                        <button type="button" class="word-button">💥 Energetic</button>
+                        <button type="button" class="word-button">😂 Playful</button>
+                        <button type="button" class="word-button">🤫 Quiet</button>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label for="kind-words" class="font-medium text-slate-700 text-lg">Share some anonymous kind words</label>
+                    <input type="text" id="kind-words" placeholder="e.g., You're an amazing person!">
+                </div>
+
+                <button type="submit" class="main-button mt-4">Submit Anonymously</button>
+            </form>
+        </div>
+
+
+        <!-- ======================= -->
+        <!--  VIEW 3: RESULTS PAGE   -->
+        <!-- ======================= -->
+        <div id="results-view" class="card hidden-view">
+            <h1>Your Results, <span id="results-view-name" class="text-amber-500">...</span></h1>
+            <p class="subtitle">Here's how you see yourself vs. how your friends see you. (<span id="response-count">0</span> responses)</p>
+            
+            <div class="mb-8">
+                <canvas id="results-chart"></canvas>
+            </div>
+            
+            <div class="text-center">
+                <h2 class="mt-8">Vibe Cloud</h2>
+                <div class="results-section">
+                    <div id="word-cloud-container" class="flex flex-wrap justify-center items-center gap-3">
+                        <!-- Words will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <h2 class="mt-8">Kind Words From Friends</h2>
+                <div class="results-section text-left">
+                    <div id="kind-words-container" class="min-h-[100px] text-slate-700 italic">
+                        <!-- Kind words will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <button id="back-to-home" class="w-full mt-8 bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-lg">&larr; Create a New Link</button>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- DOM ELEMENTS ---
+            const createView = document.getElementById('create-view');
+            const friendView = document.getElementById('friend-view');
+            const resultsView = document.getElementById('results-view');
+            
+            const selfAssessmentForm = document.getElementById('self-assessment-form');
+            const friendAssessmentForm = document.getElementById('friend-assessment-form');
+            
+            const linkGenerationSection = document.getElementById('link-generation-section');
+            const shareLinkBox = document.getElementById('share-link-box');
+            const copyLinkButton = document.getElementById('copy-link-button');
+            const viewResultsFromCreate = document.getElementById('view-results-from-create');
+            const backToHomeButton = document.getElementById('back-to-home');
+            
+            let chartInstance = null; // To hold the chart object
+
+            // --- APP LOGIC ---
+
+            // Function to switch between views
+            const showView = (viewToShow) => {
+                createView.classList.add('hidden-view');
+                friendView.classList.add('hidden-view');
+                resultsView.classList.add('hidden-view');
+                viewToShow.classList.remove('hidden-view');
+            };
+
+            // URL Router: Check URL params on page load
+            const handleRouting = () => {
+                const params = new URLSearchParams(window.location.search);
+                const userId = params.get('user');
+
+                if (userId) {
+                    // This is a friend visiting a link
+                    const allData = JSON.parse(localStorage.getItem('perceptionAppData')) || {};
+                    const userData = allData[userId];
+                    if (userData) {
+                        document.getElementById('friend-view-name').textContent = userData.name;
+                        showView(friendView);
+                    } else {
+                        // User not found, show create page
+                        showView(createView);
+                    }
+                } else {
+                    // Check if there's a user ID stored locally to show their results
+                    const lastUserId = localStorage.getItem('lastUserId');
+                    if(lastUserId) {
+                        renderResults(lastUserId);
+                        showView(resultsView);
+                    } else {
+                         showView(createView);
+                    }
+                }
+            };
+            
+            // --- EVENT LISTENERS FOR SLIDERS ---
+            const setupSliderListeners = (viewId) => {
+                ['happiness', 'energy', 'stress'].forEach(metric => {
+                    const slider = document.getElementById(`${viewId}-${metric}`);
+                    const valueDisplay = document.getElementById(`${viewId}-${metric}-value`);
+                    if (slider && valueDisplay) {
+                        slider.addEventListener('input', () => {
+                            valueDisplay.textContent = `${slider.value}%`;
+                        });
+                    }
+                });
+            };
+            setupSliderListeners('self');
+            setupSliderListeners('friend');
+            
+            // Vibe word selection
+            const vibeButtons = document.querySelectorAll('.word-button');
+            vibeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    vibeButtons.forEach(btn => btn.classList.remove('selected'));
+                    button.classList.add('selected');
+                });
+            });
+
+            // --- FORM SUBMISSIONS ---
+
+            // 1. User creates their link
+            selfAssessmentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const userNameInput = document.getElementById('user-name');
+                if (!userNameInput) return; // Guard clause
+                const userName = userNameInput.value.trim();
+                if (!userName) return;
+
+                const userId = userName.toLowerCase() + '-' + Date.now(); // Simple unique ID
+                
+                const selfData = {
+                    happiness: parseInt(document.getElementById('self-happiness').value),
+                    energy: parseInt(document.getElementById('self-energy').value),
+                    stress: parseInt(document.getElementById('self-stress').value)
+                };
+
+                const userData = {
+                    name: userName,
+                    selfAssessment: selfData,
+                    friendAssessments: []
+                };
+
+                // Save to localStorage (this is where Firebase will go)
+                const allData = JSON.parse(localStorage.getItem('perceptionAppData')) || {};
+                allData[userId] = userData;
+                localStorage.setItem('perceptionAppData', JSON.stringify(allData));
+                localStorage.setItem('lastUserId', userId); // Remember the user
+
+                // Display the share link
+                const shareURL = `${window.location.origin}${window.location.pathname}?user=${userId}`;
+                shareLinkBox.textContent = shareURL;
+                selfAssessmentForm.classList.add('hidden-view');
+                linkGenerationSection.classList.remove('hidden-view');
+            });
+
+            // 2. Friend submits their assessment
+            friendAssessmentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const params = new URLSearchParams(window.location.search);
+                const userId = params.get('user');
+
+                const selectedVibeButton = document.querySelector('.word-button.selected');
+                const vibe = selectedVibeButton ? selectedVibeButton.textContent : '';
+                const kindWords = document.getElementById('kind-words').value;
+                
+                const friendData = {
+                    happiness: parseInt(document.getElementById('friend-happiness').value),
+                    energy: parseInt(document.getElementById('friend-energy').value),
+                    stress: parseInt(document.getElementById('friend-stress').value),
+                    vibe: vibe,
+                    kindWords: kindWords,
+                };
+
+                // Update localStorage
+                const allData = JSON.parse(localStorage.getItem('perceptionAppData')) || {};
+                if (allData[userId]) {
+                    allData[userId].friendAssessments.push(friendData);
+                    localStorage.setItem('perceptionAppData', JSON.stringify(allData));
+
+                    // Show a thank you message
+                    friendView.innerHTML = `
+                        <h1 class="text-2xl font-bold text-center">Thank You!</h1>
+                        <p class="subtitle">Your response has been submitted anonymously.</p>
+                    `;
+                } else {
+                     friendView.innerHTML = `
+                        <h1 class="text-2xl font-bold text-center text-red-500">Error!</h1>
+                        <p class="text-center">Could not find the user. The link might be broken.</p>
+                    `;
+                }
+            });
+
+
+            // --- RESULTS RENDERING ---
+            const renderResults = (userId) => {
+                const allData = JSON.parse(localStorage.getItem('perceptionAppData')) || {};
+                const userData = allData[userId];
+                
+                if (!userData) {
+                    showView(createView);
+                    return;
+                }
+
+                document.getElementById('results-view-name').textContent = userData.name;
+                const friendResponses = userData.friendAssessments;
+                document.getElementById('response-count').textContent = friendResponses.length;
+
+                // Calculate Averages
+                const avgHappiness = friendResponses.reduce((sum, res) => sum + res.happiness, 0) / (friendResponses.length || 1);
+                const avgEnergy = friendResponses.reduce((sum, res) => sum + res.energy, 0) / (friendResponses.length || 1);
+                const avgStress = friendResponses.reduce((sum, res) => sum + res.stress, 0) / (friendResponses.length || 1);
+
+                // Render Chart
+                const ctx = document.getElementById('results-chart').getContext('2d');
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+                chartInstance = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Happiness 😊', 'Energy ⚡️', 'Low Stress 🧘'],
+                        datasets: [{
+                            label: 'How You See Yourself',
+                            data: [userData.selfAssessment.happiness, userData.selfAssessment.energy, 100 - userData.selfAssessment.stress],
+                            backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            pointBackgroundColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 2
+                        }, {
+                            label: `Friends' Perception (${friendResponses.length})`,
+                            data: [avgHappiness, avgEnergy, 100 - avgStress],
+                             backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                            borderColor: 'rgba(245, 158, 11, 1)',
+                            pointBackgroundColor: 'rgba(245, 158, 11, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    display: false
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 100,
+                                pointLabels: {
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Render Word Cloud
+                const vibeCounts = friendResponses.reduce((acc, res) => {
+                    if(res.vibe) acc[res.vibe] = (acc[res.vibe] || 0) + 1;
+                    return acc;
+                }, {});
+                const wordCloudContainer = document.getElementById('word-cloud-container');
+                wordCloudContainer.innerHTML = '';
+                 if (Object.keys(vibeCounts).length === 0) {
+                    wordCloudContainer.innerHTML = `<span class="text-slate-500 p-4">No vibe words submitted yet.</span>`;
+                } else {
+                    for (const [vibe, count] of Object.entries(vibeCounts)) {
+                        const wordEl = document.createElement('span');
+                        wordEl.textContent = `${vibe} (${count})`;
+                        wordEl.className = 'bg-white border border-slate-200 text-slate-700 font-medium px-4 py-2 rounded-full';
+                        wordEl.style.fontSize = `${0.9 + count * 0.15}rem`;
+                        wordCloudContainer.appendChild(wordEl);
+                    }
+                }
+
+                // Render Kind Words
+                const kindWordsContainer = document.getElementById('kind-words-container');
+                kindWordsContainer.innerHTML = '';
+                const kindWords = friendResponses.map(r => r.kindWords).filter(w => w);
+                if (kindWords.length === 0) {
+                    kindWordsContainer.innerHTML = `<span class="text-slate-500 p-4 block text-center">No kind words yet. Maybe share your link more!</span>`;
+                } else {
+                   kindWords.forEach(word => {
+                        const p = document.createElement('p');
+                        p.className = 'kind-word-item';
+                        p.textContent = `"${word}"`;
+                        kindWordsContainer.appendChild(p);
+                    });
+                }
+            };
+
+            // --- NAVIGATION BUTTONS ---
+            copyLinkButton.addEventListener('click', () => {
+                const linkToCopy = shareLinkBox.textContent;
+
+                // Use modern clipboard API if available, otherwise fallback
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(linkToCopy).then(() => {
+                        copyLinkButton.textContent = 'Copied!';
+                        setTimeout(() => { copyLinkButton.textContent = 'Copy Link'; }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy with navigator.clipboard:', err);
+                        alert('Failed to copy link.');
+                    });
+                } else {
+                    // Fallback for older browsers or insecure contexts
+                    const textArea = document.createElement('textarea');
+                    textArea.value = linkToCopy;
+                    textArea.style.position = 'fixed';
+                    textArea.style.top = '-9999px';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        copyLinkButton.textContent = 'Copied!';
+                        setTimeout(() => { copyLinkButton.textContent = 'Copy Link'; }, 2000);
+                    } catch (err) {
+                        console.error('Fallback copy failed:', err);
+                        alert('Failed to copy link.');
+                    }
+                    document.body.removeChild(textArea);
+                }
+            });
+
+            viewResultsFromCreate.addEventListener('click', () => {
+                const lastUserId = localStorage.getItem('lastUserId');
+                if (lastUserId) {
+                    renderResults(lastUserId);
+                    showView(resultsView);
+                }
+            });
+
+            backToHomeButton.addEventListener('click', () => {
+                // Clear the last user ID to start fresh
+                localStorage.removeItem('lastUserId');
+                // Also clear the URL parameters
+                window.history.pushState({}, document.title, window.location.pathname);
+                showView(createView);
+                selfAssessmentForm.classList.remove('hidden-view');
+                linkGenerationSection.classList.add('hidden-view');
+                selfAssessmentForm.reset();
+                // Reset slider values in UI
+                ['happiness', 'energy', 'stress'].forEach(metric => {
+                    document.getElementById(`self-${metric}-value`).textContent = '50%';
+                });
+            });
+
+            // --- INITIALIZATION ---
+            handleRouting();
+        });
+    </script>
+
+</body>
+</html>
+
