@@ -527,10 +527,18 @@
             </div>
         
             <div class="friend-card">
-                <h1>How your friend sees you</h1>
-                <p class="subtitle">Your feedback is anonymous.</p>
-        
+                <div id="friend-feedback-success" class="text-center p-8 hidden-view">
+                    <h1 class="text-2xl font-bold text-center">Thank You!</h1>
+                    <p class="subtitle !mb-0">Your response has been submitted anonymously.</p>
+                </div>
+                <div id="friend-feedback-error" class="text-center p-8 hidden-view">
+                     <h1 class="text-2xl font-bold text-center text-red-500">Error!</h1>
+                     <p class="subtitle !mb-0">Could not submit your response. Please try again.</p>
+                </div>
+
                 <form id="friend-assessment-form">
+                    <h1>How your friend sees you</h1>
+                    <p class="subtitle">Your feedback is anonymous.</p>
                     <div class="question-group">
                         <label class="font-bold text-slate-800">Happiness</label>
                         <input type="range" id="friend-happiness" min="0" max="100" value="50">
@@ -801,23 +809,15 @@
                     friendAssessments: arrayUnion(friendData)
                 });
                 
-                document.querySelector('#friend-view .friend-card').innerHTML = `
-                    <div class="text-center p-8">
-                        <h1 class="text-2xl font-bold text-center">Thank You!</h1>
-                        <p class="subtitle !mb-0">Your response has been submitted anonymously.</p>
-                    </div>
-                `;
+                friendAssessmentForm.classList.add('hidden-view');
+                document.getElementById('friend-feedback-success').classList.remove('hidden-view');
                 document.querySelector('#friend-view .form-footer').classList.add('hidden-view');
 
 
             } catch (err) {
                 console.error("Error updating document: ", err);
-                 document.querySelector('#friend-view .friend-card').innerHTML = `
-                    <div class="text-center p-8">
-                        <h1 class="text-2xl font-bold text-center text-red-500">Error!</h1>
-                        <p class="subtitle !mb-0">Could not submit your response. Please try again.</p>
-                    </div>
-                 `;
+                friendAssessmentForm.classList.add('hidden-view');
+                document.getElementById('friend-feedback-error').classList.remove('hidden-view');
                 document.querySelector('#friend-view .form-footer').classList.add('hidden-view');
             }
         });
