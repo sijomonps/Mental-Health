@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Font Awesome for icons -->
     
     <style>
         body {
@@ -85,9 +86,17 @@
         #create-view {
              background-color: #F87654;
         }
-        #link-view, #friend-view, #results-view {
+        #results-view {
              background-color: #fffaf0; /* Warm, happy off-white */
         }
+        #friend-view, #link-view {
+            background-color: white;
+            justify-content: flex-start;
+            padding: 0;
+        }
+         #link-view {
+            background: linear-gradient(160deg, #FDBB74 0%, #F87654 100%);
+         }
 
         .card {
             background-color: white;
@@ -100,8 +109,7 @@
             transition: all 0.3s ease-in-out;
             border: 1px solid #fff;
         }
-        /* Friend/Results cards are slightly different */
-        #link-view .card, #friend-view .card, #results-view .card {
+        #results-view .card {
             padding: 2.5rem 3rem;
             max-width: 550px;
             width: 90%;
@@ -120,7 +128,7 @@
             font-size: 1.125rem;
             box-shadow: 0 4px 20px 0 rgba(249, 115, 22, 0.4);
         }
-        #create-view .main-button {
+        #create-view .main-button, #friend-view .main-button {
             padding: 1rem;
         }
         .main-button:hover {
@@ -173,15 +181,7 @@
         .hidden-view {
             display: none;
         }
-        .link-box {
-            background-color: #fff7ed; /* Light Orange */
-            padding: 1.25rem;
-            border-radius: 0.75rem;
-            word-wrap: break-word;
-            border: 2px dashed #fed7aa; /* Light Orange Border */
-            color: #c2410c; /* Dark Orange text */
-            font-weight: 500;
-        }
+       
         .label-container {
             display: flex;
             justify-content: space-between;
@@ -193,7 +193,6 @@
             color: #f97316; /* New Orange */
             font-size: 1.5rem;
         }
-        /* Target self-assessment value specifically for new design */
         #self-happiness-value, #self-energy-value, #self-stress-value {
             color: #334155;
             font-size: 1.125rem;
@@ -225,22 +224,21 @@
             margin-bottom: 2rem;
         }
         .word-button {
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
             color: #475569;
-            border: 1px solid #e2e8f0;
-            padding: 0.75rem 1.25rem;
+            border: 1px solid #f1f5f9;
+            padding: 0.5rem 1rem;
             border-radius: 9999px;
             cursor: pointer;
             transition: all 0.2s;
-            margin: 0.375rem;
+            margin: 0.25rem;
             font-weight: 500;
         }
         .word-button.selected {
-            background-color: #f97316; /* New Orange */
-            color: white;
-            border-color: #f97316; /* New Orange */
-            transform: scale(1.05);
-            font-weight: 700;
+            background-color: #fff7ed;
+            color: #f97316;
+            border-color: #f97316;
+            font-weight: 600;
         }
         .results-section {
             background-color: #f8fafc;
@@ -257,15 +255,160 @@
             margin-bottom: 0.75rem;
         }
 
+        /* --- Friend & Link View New Styles --- */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 1.5rem;
+        }
+        #friend-view .top-bar {
+            border-bottom: 1px solid #f1f5f9;
+        }
+        #link-view .top-bar {
+            color: white;
+        }
+        .top-bar-title {
+            font-weight: 600;
+            color: #334155;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #link-view .top-bar-title { color: white; }
+        .top-bar-action {
+             font-weight: 600;
+             cursor: pointer;
+        }
+        .friend-card, .link-card {
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 550px;
+            flex-grow: 1;
+        }
+        .link-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+        #link-view h1 {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .link-input-group {
+            display: flex;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+        }
+        .link-input-group input {
+            background: transparent;
+            border: none;
+            color: white;
+            flex-grow: 1;
+            padding: 0 0.5rem;
+            outline: none;
+        }
+        .link-input-group button {
+            background-color: white;
+            color: #F87654;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .share-via-title {
+            margin-top: 3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .share-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+        .share-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+        }
+        .share-icon div {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.2);
+            display: grid;
+            place-items: center;
+            font-size: 1.5rem;
+        }
+        .share-icon span {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+
+        #friend-view h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: left;
+            margin-bottom: 0.25rem;
+        }
+        #friend-view p.subtitle {
+            text-align: left;
+            margin-bottom: 2rem;
+            margin-left: 0;
+            font-size: 1rem;
+        }
+        .slider-ends {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+        #friend-view input[type="range"] {
+            margin-top: 1rem;
+        }
+        .kind-words-input {
+            width: 100%;
+            height: 100px;
+            padding: 0.875rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            resize: none;
+        }
+        .form-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 1.5rem;
+            border-top: 1px solid #f1f5f9;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+        }
+        .form-footer .main-button {
+            max-width: 520px;
+        }
+
         /* Mobile Responsive Styles */
         @media (max-width: 640px) {
-            .card {
+            .card, #results-view .card {
                 padding: 2rem 1.5rem;
                 width: 95%;
                 margin: 1rem auto;
-            }
-            #link-view .card, #friend-view .card, #results-view .card {
-                padding: 2rem 1.5rem;
             }
             h1 {
                 font-size: 2rem;
@@ -283,6 +426,12 @@
             }
             .slider-value {
                 font-size: 1.25rem;
+            }
+            .friend-card, .link-card {
+                padding: 1rem;
+            }
+            .share-icons {
+                gap: 1rem;
             }
         }
     </style>
@@ -340,7 +489,6 @@
                         </div>
                         <input type="range" id="self-stress" min="0" max="100" value="50">
                     </div>
-                    <!-- NEW: Error message div -->
                     <div id="form-error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4 text-center hidden-view" role="alert"></div>
                     <button type="submit" class="main-button mt-6">Generate Link</button>
                 </form>
@@ -351,12 +499,20 @@
         <!-- VIEW 1.5: LINK READY PAGE -->
         <!-- ========================= -->
         <div id="link-view" class="view hidden-view">
-            <div class="card">
-                <h1 class="text-2xl mb-4">Your Link is Ready!</h1>
-                <p class="subtitle !mb-6">Share this link with your friends to get their anonymous feedback.</p>
-                <div id="share-link-box" class="link-box"></div>
-                <button id="copy-link-button" class="main-button w-full mt-6">Copy Link</button>
-                <button id="view-results-from-link-page" class="mt-3 bg-slate-200 text-slate-700 w-full p-3 rounded-lg font-semibold">View My Results &rarr;</button>
+            <div class="top-bar">
+                <span class="top-bar-title">Link Generated!</span>
+                <span id="link-view-done" class="top-bar-action">Done</span>
+            </div>
+            <div class="link-card">
+                <h1>Share your unique link with friends!</h1>
+                <div class="link-input-group">
+                    <input type="text" id="share-link-box" readonly>
+                    <button id="copy-link-button">Copy Link</button>
+                </div>
+                <p class="share-via-title">Share via</p>
+                <div class="share-icons" id="share-icons-container">
+                     <!-- Icons will be generated by JS -->
+                </div>
             </div>
         </div>
 
@@ -365,48 +521,64 @@
         <!-- VIEW 2: FRIEND'S PAGE -->
         <!-- ======================= -->
         <div id="friend-view" class="view hidden-view">
-            <div class="card">
-                <h1>How is <span id="friend-view-name" class="text-orange-500">...</span> doing?</h1>
-                <p class="subtitle">Your friend wants your perspective on their well-being. Your answers are anonymous.</p>
-                
+            <div class="top-bar">
+                 <p class="top-bar-title">How do you see <strong id="friend-view-name-topbar">...</strong>?</p>
+            </div>
+        
+            <div class="friend-card">
+                <h1>How your friend sees you</h1>
+                <p class="subtitle">Your feedback is anonymous.</p>
+        
                 <form id="friend-assessment-form">
-                     <div class="question-group">
-                        <div class="label-container">
-                            <label for="friend-happiness" class="font-medium text-slate-700">😊 Their Perceived Happiness</label>
-                            <span id="friend-happiness-value" class="slider-value">50%</span>
-                        </div>
+                    <div class="question-group">
+                        <label class="font-bold text-slate-800">Happiness</label>
                         <input type="range" id="friend-happiness" min="0" max="100" value="50">
-                    </div>
-                    <div class="question-group">
-                        <div class="label-container">
-                            <label for="friend-energy" class="font-medium text-slate-700">⚡️ Their Perceived Energy</label>
-                            <span id="friend-energy-value" class="slider-value">50%</span>
+                        <div class="slider-ends">
+                            <span>Sad</span>
+                            <span>Joyful</span>
                         </div>
+                    </div>
+        
+                    <div class="question-group">
+                        <label class="font-bold text-slate-800">Energy</label>
                         <input type="range" id="friend-energy" min="0" max="100" value="50">
-                    </div>
-                    <div class="question-group">
-                        <div class="label-container">
-                            <label for="friend-stress" class="font-medium text-slate-700">🧘 Their Perceived Stress Level</label>
-                            <span id="friend-stress-value" class="slider-value">50%</span>
+                        <div class="slider-ends">
+                            <span>Low</span>
+                            <span>High</span>
                         </div>
+                    </div>
+        
+                    <div class="question-group">
+                        <label class="font-bold text-slate-800">Stress</label>
                         <input type="range" id="friend-stress" min="0" max="100" value="50">
-                    </div>
-                     <div class="question-group">
-                        <label class="font-medium text-slate-700 block mb-2 text-lg">Which word best describes their vibe?</label>
-                        <div id="vibe-words-container" class="flex flex-wrap justify-center">
-                            <button type="button" class="word-button">☀️ Sunny</button>
-                            <button type="button" class="word-button">🧘‍♀️ Calm</button>
-                            <button type="button" class="word-button">🤔 Thoughtful</button>
-                            <button type="button" class="word-button">💥 Energetic</button>
-                            <button type="button" class="word-button">😂 Playful</button>
-                            <button type="button" class="word-button">🤫 Quiet</button>
+                        <div class="slider-ends">
+                            <span>Relaxed</span>
+                            <span>Stressed</span>
                         </div>
                     </div>
+        
                     <div class="question-group">
-                        <label for="kind-words" class="font-medium text-slate-700 text-lg">Share some anonymous kind words</label>
-                        <input type="text" id="kind-words" placeholder="e.g., You're an amazing person!">
+                        <label class="font-bold text-slate-800 block mb-2">Pick a vibe</label>
+                        <div class="flex flex-wrap">
+                            <button type="button" class="word-button">Calm</button>
+                            <button type="button" class="word-button">Energetic</button>
+                            <button type="button" class="word-button">Thoughtful</button>
+                            <button type="button" class="word-button">Creative</button>
+                            <button type="button" class="word-button">Focused</button>
+                            <button type="button" class="word-button">Playful</button>
+                            <button type="button" class="word-button">Resilient</button>
+                            <button type="button" class="word-button">Supportive</button>
+                        </div>
                     </div>
-                    <button type="submit" class="main-button mt-4">Submit Anonymously</button>
+        
+                    <div class="question-group">
+                        <label for="kind-words" class="font-bold text-slate-800 block mb-2">Kind words</label>
+                        <textarea id="kind-words" class="kind-words-input" placeholder="Share some kind words..."></textarea>
+                    </div>
+        
+                    <div class="form-footer">
+                        <button type="submit" class="main-button">Submit Feedback</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -417,7 +589,7 @@
         <!-- ======================= -->
         <div id="results-view" class="view hidden-view">
             <div class="card">
-                <h1>Your Results, <span id="results-view-name" class="text-orange-500">...</span></h1>
+                <h1 class="text-2xl">Your Perception Gap</h1>
                 <p class="subtitle">Here's how you see yourself vs. how your friends see you. (<span id="response-count">0</span> responses)</p>
                 <div class="mb-8">
                     <canvas id="results-chart"></canvas>
@@ -444,22 +616,16 @@
         import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
         // =================================================================================
-        // IMPORTANT: PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
-        // It should look like:
-        // const firebaseConfig = {
-        //   apiKey: "AIzaSy...",
-        //   authDomain: "your-project.firebaseapp.com",
-        //   ...
-        // };
+        // YOUR FIREBASE CONFIGURATION
         // =================================================================================
         const firebaseConfig = {
-            apiKey: "AIzaSyAwtPTe9b1uLbkLt8DWEeK5Hugmn42jjSw",
-            authDomain: "mental-health-checkin-97bc6.firebaseapp.com",
-            projectId: "mental-health-checkin-97bc6",
-            storageBucket: "mental-health-checkin-97bc6.firebasestorage.app",
-            messagingSenderId: "247647783679",
-            appId: "1:247647783679:web:0d90d0132546bc85929aca",
-            measurementId: "G-YS1F8MSWYP"
+          apiKey: "AIzaSyAwtPTe9b1uLbkLt8DWEeK5Hugmn42jjSw",
+          authDomain: "mental-health-checkin-97bc6.firebaseapp.com",
+          projectId: "mental-health-checkin-97bc6",
+          storageBucket: "mental-health-checkin-97bc6.appspot.com",
+          messagingSenderId: "247647783679",
+          appId: "1:247647783679:web:0d90d0132546bc85929aca",
+          measurementId: "G-YS1F8MSWYP"
         };
         // =================================================================================
 
@@ -473,9 +639,7 @@
         const linkView = document.getElementById('link-view');
         const friendView = document.getElementById('friend-view');
         const resultsView = document.getElementById('results-view');
-
         const getStartedBtn = document.getElementById('get-started-btn');
-        
         const selfAssessmentForm = document.getElementById('self-assessment-form');
         const friendAssessmentForm = document.getElementById('friend-assessment-form');
         const backToHomeButton = document.getElementById('back-to-home');
@@ -503,7 +667,8 @@
                 const userDocRef = doc(db, "users", userId);
                 const docSnap = await getDoc(userDocRef);
                 if (docSnap.exists()) {
-                    document.getElementById('friend-view-name').textContent = docSnap.data().name;
+                    const userName = docSnap.data().name;
+                    document.getElementById('friend-view-name-topbar').textContent = userName;
                     showView(friendView);
                 } else {
                     alert("This user link is invalid. Please check the URL.");
@@ -530,29 +695,33 @@
             ['happiness', 'energy', 'stress'].forEach(metric => {
                 const slider = document.getElementById(`${viewId}-${metric}`);
                 const valueDisplay = document.getElementById(`${viewId}-${metric}-value`);
-                if (slider && valueDisplay) {
-                    // Initialize
-                    if (isTenScale) {
-                        valueDisplay.textContent = Math.round(slider.value / 10);
-                    } else {
-                         valueDisplay.textContent = `${slider.value}%`;
-                    }
-                    if(viewId === 'self') updateSliderFill(slider);
-
-                    // Add listener
-                    slider.addEventListener('input', () => {
+                
+                if (slider) {
+                     updateSliderFill(slider); // Always update fill
+                    if (valueDisplay) {
+                        // Initialize value display
                         if (isTenScale) {
                             valueDisplay.textContent = Math.round(slider.value / 10);
                         } else {
-                            valueDisplay.textContent = `${slider.value}%`;
+                             valueDisplay.textContent = `${slider.value}%`;
                         }
-                        if(viewId === 'self') updateSliderFill(slider);
+                    }
+                    // Add listener
+                    slider.addEventListener('input', () => {
+                        updateSliderFill(slider); // Update fill on input
+                        if (valueDisplay) {
+                            if (isTenScale) {
+                                valueDisplay.textContent = Math.round(slider.value / 10);
+                            } else {
+                                valueDisplay.textContent = `${slider.value}%`;
+                            }
+                        }
                     });
                 }
             });
         };
-        setupSliderListeners('self', true); // Self-assessment uses 0-10 scale display
-        setupSliderListeners('friend', false); // Friend assessment uses 0-100% display
+        setupSliderListeners('self', true);
+        setupSliderListeners('friend', false);
         
         const vibeButtons = document.querySelectorAll('.word-button');
         vibeButtons.forEach(button => {
@@ -594,7 +763,8 @@
                 localStorage.setItem('lastUserId', userId); 
                 
                 const shareURL = `${window.location.origin}${window.location.pathname}?user=${userId}`;
-                document.getElementById('share-link-box').textContent = shareURL;
+                document.getElementById('share-link-box').value = shareURL;
+                generateShareIcons(shareURL, `How do you see ${userName}?`);
                 showView(linkView);
 
             } catch (err) {
@@ -620,8 +790,8 @@
                 happiness: parseInt(document.getElementById('friend-happiness').value),
                 energy: parseInt(document.getElementById('friend-energy').value),
                 stress: parseInt(document.getElementById('friend-stress').value),
-                vibe: selectedVibeButton ? selectedVibeButton.textContent : '',
-                kindWords: document.getElementById('kind-words').value,
+                vibe: selectedVibeButton ? selectedVibeButton.textContent.trim() : '',
+                kindWords: document.getElementById('kind-words').value.trim(),
             };
 
             try {
@@ -629,21 +799,25 @@
                 await updateDoc(userDocRef, {
                     friendAssessments: arrayUnion(friendData)
                 });
-
-                friendView.innerHTML = `
-                    <div class="card">
+                
+                document.querySelector('#friend-view .friend-card').innerHTML = `
+                    <div class="text-center p-8">
                         <h1 class="text-2xl font-bold text-center">Thank You!</h1>
-                        <p class="subtitle">Your response has been submitted anonymously.</p>
+                        <p class="subtitle !mb-0">Your response has been submitted anonymously.</p>
                     </div>
                 `;
+                document.querySelector('#friend-view .form-footer').classList.add('hidden-view');
+
+
             } catch (err) {
                 console.error("Error updating document: ", err);
-                friendView.innerHTML = `
-                    <div class="card">
+                 document.querySelector('#friend-view .friend-card').innerHTML = `
+                    <div class="text-center p-8">
                         <h1 class="text-2xl font-bold text-center text-red-500">Error!</h1>
-                        <p class="text-center">Could not submit your response. Please try again.</p>
+                        <p class="subtitle !mb-0">Could not submit your response. Please try again.</p>
                     </div>
-                `;
+                 `;
+                document.querySelector('#friend-view .form-footer').classList.add('hidden-view');
             }
         });
 
@@ -660,7 +834,9 @@
             }
 
             const userData = docSnap.data();
-            document.getElementById('results-view-name').textContent = userData.name;
+            const resultsViewName = document.querySelector('#results-view h1');
+            resultsViewName.innerHTML = `Your Perception Gap, <span class="text-orange-500">${userData.name}</span>`;
+
             const friendResponses = userData.friendAssessments;
             document.getElementById('response-count').textContent = friendResponses.length;
             
@@ -694,28 +870,43 @@
                 chartInstance.destroy();
             }
             chartInstance = new Chart(ctx, {
-                type: 'radar',
+                type: 'bar', // CHANGED
                 data: {
-                    labels: ['Happiness 😊', 'Energy ⚡️', 'Low Stress 🧘'],
+                    labels: ['Happiness', 'Energy', 'Low Stress'],
                     datasets: [{
-                        label: 'How You See Yourself',
+                        label: 'You',
                         data: [userData.selfAssessment.happiness, userData.selfAssessment.energy, 100 - userData.selfAssessment.stress],
-                        backgroundColor: 'rgba(248, 118, 84, 0.2)',
-                        borderColor: 'rgba(248, 118, 84, 1)',
-                        pointBackgroundColor: 'rgba(248, 118, 84, 1)',
-                        borderWidth: 2
+                        backgroundColor: '#FDBB74', // NEW COLOR
+                        borderRadius: 4,
                     }, {
-                        label: `Friends' Perception (${friendResponses.length})`,
+                        label: `Friends`,
                         data: [avgHappiness, avgEnergy, 100 - avgStress],
-                         backgroundColor: 'rgba(249, 115, 22, 0.2)',
-                        borderColor: 'rgba(249, 115, 22, 1)',
-                        pointBackgroundColor: 'rgba(249, 115, 22, 1)',
-                        borderWidth: 2
+                        backgroundColor: '#F87654', // NEW COLOR
+                        borderRadius: 4,
                     }]
                 },
                 options: {
+                    indexAxis: 'y', // CHANGED
                     responsive: true,
-                    scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100, pointLabels: { font: { size: 14, weight: 'bold' } } } }
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                    },
+                    scales: { 
+                        x: { 
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                           grid: {
+                                display: false
+                            }
+                        }
+                    }
                 }
             });
 
@@ -754,25 +945,70 @@
             }
         };
 
+        const generateShareIcons = (url, text) => {
+            const container = document.getElementById('share-icons-container');
+            container.innerHTML = '';
+            const encodedUrl = encodeURIComponent(url);
+            const encodedText = encodeURIComponent(text);
+
+            const services = {
+                WhatsApp: `https://wa.me/?text=${encodedText}%20${encodedUrl}`,
+                Messenger: `fb-messenger://share/?link=${encodedUrl}`,
+                Email: `mailto:?subject=${encodedText}&body=${encodedUrl}`,
+                Twitter: `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
+            };
+
+            for (const [name, link] of Object.entries(services)) {
+                const a = document.createElement('a');
+                a.href = link;
+                a.target = '_blank';
+                a.className = 'share-icon';
+                a.innerHTML = `<div>${name.charAt(0)}</div><span>${name}</span>`; // Simple text icon
+                container.appendChild(a);
+            }
+             // More/Web Share API
+            if (navigator.share) {
+                const moreButton = document.createElement('div');
+                moreButton.className = 'share-icon';
+                moreButton.innerHTML = `<div>&centerdot;&centerdot;&centerdot;</div><span>More</span>`;
+                moreButton.onclick = () => {
+                    navigator.share({
+                        title: 'Perception Gap',
+                        text: text,
+                        url: url,
+                    })
+                };
+                container.appendChild(moreButton);
+            }
+        };
+
+
         // --- NAVIGATION BUTTONS ---
         getStartedBtn.addEventListener('click', () => {
             showView(createView);
         });
 
         document.getElementById('copy-link-button').addEventListener('click', () => {
-            const linkToCopy = document.getElementById('share-link-box').textContent;
+            const copyButton = document.getElementById('copy-link-button');
+            const linkToCopy = document.getElementById('share-link-box').value;
             navigator.clipboard.writeText(linkToCopy).then(() => {
-                document.getElementById('copy-link-button').textContent = 'Copied!';
-                setTimeout(() => { document.getElementById('copy-link-button').textContent = 'Copy Link'; }, 2000);
+                copyButton.textContent = 'Copied!';
+                setTimeout(() => { copyButton.textContent = 'Copy Link'; }, 2000);
             });
         });
 
-        document.getElementById('view-results-from-link-page').addEventListener('click', async () => {
-            const lastUserId = localStorage.getItem('lastUserId');
+        document.getElementById('link-view-done').addEventListener('click', async () => {
+             const lastUserId = localStorage.getItem('lastUserId');
             if (lastUserId) {
                 await renderResults(lastUserId);
                 showView(resultsView);
+            } else {
+                showView(welcomeView);
             }
+        });
+        
+        document.getElementById('friend-view-close').addEventListener('click', () => {
+             window.location.href = window.location.origin + window.location.pathname;
         });
         
         backToHomeButton.addEventListener('click', () => {
