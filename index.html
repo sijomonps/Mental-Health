@@ -13,25 +13,102 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #fffaf0; /* Warm, happy off-white */
         }
         .app-container {
             min-height: 100vh;
             color: #4a5568; /* Softer text color */
         }
+        /* Base View Class */
+        .view {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            position: relative; /* Added for footer positioning */
+        }
+
+        /* --- Welcome View Styles --- */
+        #welcome-view {
+            background: linear-gradient(160deg, #FDBB74 0%, #F87654 100%); /* New Orange Gradient */
+            justify-content: center; /* Changed from space-between */
+        }
+        .welcome-content {
+            text-align: center;
+        }
+        .welcome-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            line-height: 1.1;
+        }
+        .welcome-content p {
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 0.5rem;
+        }
+        .welcome-footer {
+            text-align: center;
+            width: 100%;
+            position: absolute; /* Positioned at bottom */
+            bottom: 2rem; /* Spacing from bottom */
+        }
+        .welcome-footer p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        .get-started-btn {
+            background-color: white;
+            color: #F87654; /* New Orange */
+            font-weight: 700;
+            font-size: 1.125rem;
+            padding: 1rem 0;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 0.75rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .get-started-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -5px rgba(0,0,0,0.15);
+        }
+
+
+        /* --- Main App Styles --- */
+        #create-view {
+             background-color: #F87654;
+        }
+        #link-view, #friend-view, #results-view {
+             background-color: #fffaf0; /* Warm, happy off-white */
+        }
+
         .card {
             background-color: white;
-            border-radius: 2rem; /* More rounded */
-            box-shadow: 0 20px 40px -10px rgba(251, 146, 60, 0.15);
-            padding: 2.5rem 3rem;
-            max-width: 550px;
-            width: 90%;
+            border-radius: 1.5rem; /* More rounded */
+            box-shadow: 0 20px 40px -10px rgba(0,0,0, 0.2);
+            padding: 2.5rem;
+            max-width: 480px;
+            width: 100%;
             margin: 2rem auto;
             transition: all 0.3s ease-in-out;
             border: 1px solid #fff;
         }
+        /* Friend/Results cards are slightly different */
+        #link-view .card, #friend-view .card, #results-view .card {
+            padding: 2.5rem 3rem;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 20px 40px -10px rgba(251, 146, 60, 0.15);
+        }
         .main-button {
-            background: linear-gradient(to right, #f59e0b, #ef4444); /* Yellow to Red gradient */
+            background: linear-gradient(to right, #fb923c, #f97316); /* New Orange Gradient */
             color: white;
             font-weight: 700;
             padding: 1rem 2rem;
@@ -41,11 +118,14 @@
             cursor: pointer;
             width: 100%;
             font-size: 1.125rem;
-            box-shadow: 0 4px 20px 0 rgba(245, 158, 11, 0.4);
+            box-shadow: 0 4px 20px 0 rgba(249, 115, 22, 0.4);
+        }
+        #create-view .main-button {
+            padding: 1rem;
         }
         .main-button:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 25px 0 rgba(245, 158, 11, 0.3);
+            box-shadow: 0 8px 25px 0 rgba(249, 115, 22, 0.3);
         }
         .main-button:disabled {
             background: #d1d5db;
@@ -64,11 +144,12 @@
         input[type="range"] {
             -webkit-appearance: none;
             appearance: none;
-            height: 10px;
+            width: 100%;
+            height: 8px;
             background: #f1f5f9;
             outline: none;
             transition: opacity .2s;
-            border-radius: 5px;
+            border-radius: 4px;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -78,7 +159,7 @@
             background: white;
             cursor: pointer;
             border-radius: 50%;
-            border: 4px solid #f59e0b; /* Happy orange */
+            border: 4px solid #f97316; /* New Orange */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         input[type="range"]::-moz-range-thumb {
@@ -87,18 +168,18 @@
             background: white;
             cursor: pointer;
             border-radius: 50%;
-            border: 4px solid #f59e0b;
+            border: 4px solid #f97316; /* New Orange */
         }
         .hidden-view {
             display: none;
         }
         .link-box {
-            background-color: #fffbeb;
+            background-color: #fff7ed; /* Light Orange */
             padding: 1.25rem;
             border-radius: 0.75rem;
             word-wrap: break-word;
-            border: 2px dashed #fcd34d;
-            color: #d97706;
+            border: 2px dashed #fed7aa; /* Light Orange Border */
+            color: #c2410c; /* Dark Orange text */
             font-weight: 500;
         }
         .label-container {
@@ -109,8 +190,13 @@
         }
         .slider-value {
             font-weight: 800;
-            color: #f59e0b; /* Happy orange */
+            color: #f97316; /* New Orange */
             font-size: 1.5rem;
+        }
+        /* Target self-assessment value specifically for new design */
+        #self-happiness-value, #self-energy-value, #self-stress-value {
+            color: #334155;
+            font-size: 1.125rem;
         }
         h1 {
             font-size: 2.5rem;
@@ -136,7 +222,7 @@
             margin-right: auto;
         }
         .question-group {
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
         .word-button {
             background-color: #f8fafc;
@@ -150,9 +236,9 @@
             font-weight: 500;
         }
         .word-button.selected {
-            background-color: #f59e0b; /* Happy orange */
+            background-color: #f97316; /* New Orange */
             color: white;
-            border-color: #f59e0b;
+            border-color: #f97316; /* New Orange */
             transform: scale(1.05);
             font-weight: 700;
         }
@@ -164,8 +250,8 @@
             margin-top: 1rem;
         }
         .kind-word-item {
-            background-color: #fffbeb; /* Light yellow */
-            color: #b45309; /* Dark yellow */
+            background-color: #fff7ed; /* Light Orange */
+            color: #b45309; /* Dark Orange */
             padding: 1rem;
             border-radius: 0.75rem;
             margin-bottom: 0.75rem;
@@ -176,10 +262,17 @@
             .card {
                 padding: 2rem 1.5rem;
                 width: 95%;
+                margin: 1rem auto;
+            }
+            #link-view .card, #friend-view .card, #results-view .card {
+                padding: 2rem 1.5rem;
             }
             h1 {
                 font-size: 2rem;
                 line-height: 2.25rem;
+            }
+            .welcome-content h1 {
+                font-size: 2.5rem;
             }
             p.subtitle {
                 font-size: 1rem;
@@ -194,53 +287,76 @@
         }
     </style>
 </head>
-<body class="app-container flex items-center justify-center">
+<body class="app-container">
 
     <!-- App Container -->
     <div id="app" class="w-full">
         
         <!-- ======================= -->
+        <!--  VIEW 0: WELCOME PAGE   -->
+        <!-- ======================= -->
+        <div id="welcome-view" class="view">
+             <div class="welcome-content">
+                <h1>Perception Gap</h1>
+                <p>See yourself, as others see you.</p>
+            </div>
+            <div class="welcome-footer">
+                <p>Created by MCA students</p>
+                <button id="get-started-btn" class="get-started-btn">Get Started</button>
+            </div>
+        </div>
+
+        <!-- ======================= -->
         <!--  VIEW 1: CREATE PAGE    -->
         <!-- ======================= -->
-        <div id="create-view" class="card">
-            <h1>How are you feeling today?</h1>
-            <p class="subtitle">A quick, private check-in to see your vibe. Then, share a link to see what your friends think!</p>
+        <div id="create-view" class="view hidden-view">
+            
+            <div class="card">
+                <h1 class="text-2xl mb-8">How are you feeling today?</h1>
+                
+                <form id="self-assessment-form">
+                    <div class="mb-6">
+                        <label for="user-name" class="font-medium text-slate-700 text-base">Your First Name</label>
+                        <input type="text" id="user-name" placeholder="E.g., Alex" required>
+                    </div>
+                    <div class="question-group">
+                        <div class="label-container">
+                            <label for="self-happiness" class="font-medium text-slate-700">Happiness</label>
+                            <span id="self-happiness-value" class="font-bold">5</span>
+                        </div>
+                        <input type="range" id="self-happiness" min="0" max="100" value="50">
+                    </div>
+                    <div class="question-group">
+                        <div class="label-container">
+                            <label for="self-energy" class="font-medium text-slate-700">Energy</label>
+                            <span id="self-energy-value" class="font-bold">5</span>
+                        </div>
+                        <input type="range" id="self-energy" min="0" max="100" value="50">
+                    </div>
+                    <div class="question-group">
+                        <div class="label-container">
+                            <label for="self-stress" class="font-medium text-slate-700">Stress</label>
+                            <span id="self-stress-value" class="font-bold">5</span>
+                        </div>
+                        <input type="range" id="self-stress" min="0" max="100" value="50">
+                    </div>
+                    <!-- NEW: Error message div -->
+                    <div id="form-error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4 text-center hidden-view" role="alert"></div>
+                    <button type="submit" class="main-button mt-6">Generate Link</button>
+                </form>
+            </div>
+        </div>
 
-            <form id="self-assessment-form">
-                <div class="mb-8">
-                    <label for="user-name" class="font-medium text-slate-700 text-lg">Your First Name</label>
-                    <input type="text" id="user-name" placeholder="E.g., Alex" required>
-                </div>
-                <div class="question-group">
-                    <div class="label-container">
-                        <label for="self-happiness" class="font-medium text-slate-700">😊 Your Happiness</label>
-                        <span id="self-happiness-value" class="slider-value">50%</span>
-                    </div>
-                    <input type="range" id="self-happiness" min="0" max="100" value="50">
-                </div>
-                <div class="question-group">
-                    <div class="label-container">
-                        <label for="self-energy" class="font-medium text-slate-700">⚡️ Your Energy</label>
-                        <span id="self-energy-value" class="slider-value">50%</span>
-                    </div>
-                    <input type="range" id="self-energy" min="0" max="100" value="50">
-                </div>
-                <div class="question-group">
-                    <div class="label-container">
-                        <label for="self-stress" class="font-medium text-slate-700">🧘 Your Stress Level</label>
-                        <span id="self-stress-value" class="slider-value">50%</span>
-                    </div>
-                    <input type="range" id="self-stress" min="0" max="100" value="50">
-                </div>
-                <button type="submit" class="main-button mt-6">Generate Share Link</button>
-            </form>
-
-            <div id="link-generation-section" class="hidden-view mt-8 text-center">
-                <h2 class="text-center">Your Link is Ready!</h2>
-                <p class="subtitle text-sm">Share this with friends. Return to this page anytime to view your results.</p>
-                <div id="share-link-box" class="link-box text-center text-sm"></div>
-                <button id="copy-link-button" class="w-full mt-4 bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-lg">Copy Link</button>
-                <button id="view-results-from-create" class="w-full mt-3 main-button">View My Results &rarr;</button>
+        <!-- ========================= -->
+        <!-- VIEW 1.5: LINK READY PAGE -->
+        <!-- ========================= -->
+        <div id="link-view" class="view hidden-view">
+            <div class="card">
+                <h1 class="text-2xl mb-4">Your Link is Ready!</h1>
+                <p class="subtitle !mb-6">Share this link with your friends to get their anonymous feedback.</p>
+                <div id="share-link-box" class="link-box"></div>
+                <button id="copy-link-button" class="main-button w-full mt-6">Copy Link</button>
+                <button id="view-results-from-link-page" class="mt-3 bg-slate-200 text-slate-700 w-full p-3 rounded-lg font-semibold">View My Results &rarr;</button>
             </div>
         </div>
 
@@ -248,72 +364,76 @@
         <!-- ======================= -->
         <!-- VIEW 2: FRIEND'S PAGE -->
         <!-- ======================= -->
-        <div id="friend-view" class="card hidden-view">
-            <h1>How is <span id="friend-view-name" class="text-amber-500">...</span> doing?</h1>
-            <p class="subtitle">Your friend wants your perspective on their well-being. Your answers are anonymous.</p>
-            
-            <form id="friend-assessment-form">
-                 <div class="question-group">
-                    <div class="label-container">
-                        <label for="friend-happiness" class="font-medium text-slate-700">😊 Their Perceived Happiness</label>
-                        <span id="friend-happiness-value" class="slider-value">50%</span>
+        <div id="friend-view" class="view hidden-view">
+            <div class="card">
+                <h1>How is <span id="friend-view-name" class="text-orange-500">...</span> doing?</h1>
+                <p class="subtitle">Your friend wants your perspective on their well-being. Your answers are anonymous.</p>
+                
+                <form id="friend-assessment-form">
+                     <div class="question-group">
+                        <div class="label-container">
+                            <label for="friend-happiness" class="font-medium text-slate-700">😊 Their Perceived Happiness</label>
+                            <span id="friend-happiness-value" class="slider-value">50%</span>
+                        </div>
+                        <input type="range" id="friend-happiness" min="0" max="100" value="50">
                     </div>
-                    <input type="range" id="friend-happiness" min="0" max="100" value="50">
-                </div>
-                <div class="question-group">
-                    <div class="label-container">
-                        <label for="friend-energy" class="font-medium text-slate-700">⚡️ Their Perceived Energy</label>
-                        <span id="friend-energy-value" class="slider-value">50%</span>
+                    <div class="question-group">
+                        <div class="label-container">
+                            <label for="friend-energy" class="font-medium text-slate-700">⚡️ Their Perceived Energy</label>
+                            <span id="friend-energy-value" class="slider-value">50%</span>
+                        </div>
+                        <input type="range" id="friend-energy" min="0" max="100" value="50">
                     </div>
-                    <input type="range" id="friend-energy" min="0" max="100" value="50">
-                </div>
-                <div class="question-group">
-                    <div class="label-container">
-                        <label for="friend-stress" class="font-medium text-slate-700">🧘 Their Perceived Stress Level</label>
-                        <span id="friend-stress-value" class="slider-value">50%</span>
+                    <div class="question-group">
+                        <div class="label-container">
+                            <label for="friend-stress" class="font-medium text-slate-700">🧘 Their Perceived Stress Level</label>
+                            <span id="friend-stress-value" class="slider-value">50%</span>
+                        </div>
+                        <input type="range" id="friend-stress" min="0" max="100" value="50">
                     </div>
-                    <input type="range" id="friend-stress" min="0" max="100" value="50">
-                </div>
-                 <div class="question-group">
-                    <label class="font-medium text-slate-700 block mb-2 text-lg">Which word best describes their vibe?</label>
-                    <div id="vibe-words-container" class="flex flex-wrap justify-center">
-                        <button type="button" class="word-button">☀️ Sunny</button>
-                        <button type="button" class="word-button">🧘‍♀️ Calm</button>
-                        <button type="button" class="word-button">🤔 Thoughtful</button>
-                        <button type="button" class="word-button">💥 Energetic</button>
-                        <button type="button" class="word-button">😂 Playful</button>
-                        <button type="button" class="word-button">🤫 Quiet</button>
+                     <div class="question-group">
+                        <label class="font-medium text-slate-700 block mb-2 text-lg">Which word best describes their vibe?</label>
+                        <div id="vibe-words-container" class="flex flex-wrap justify-center">
+                            <button type="button" class="word-button">☀️ Sunny</button>
+                            <button type="button" class="word-button">🧘‍♀️ Calm</button>
+                            <button type="button" class="word-button">🤔 Thoughtful</button>
+                            <button type="button" class="word-button">💥 Energetic</button>
+                            <button type="button" class="word-button">😂 Playful</button>
+                            <button type="button" class="word-button">🤫 Quiet</button>
+                        </div>
                     </div>
-                </div>
-                <div class="question-group">
-                    <label for="kind-words" class="font-medium text-slate-700 text-lg">Share some anonymous kind words</label>
-                    <input type="text" id="kind-words" placeholder="e.g., You're an amazing person!">
-                </div>
-                <button type="submit" class="main-button mt-4">Submit Anonymously</button>
-            </form>
+                    <div class="question-group">
+                        <label for="kind-words" class="font-medium text-slate-700 text-lg">Share some anonymous kind words</label>
+                        <input type="text" id="kind-words" placeholder="e.g., You're an amazing person!">
+                    </div>
+                    <button type="submit" class="main-button mt-4">Submit Anonymously</button>
+                </form>
+            </div>
         </div>
 
 
         <!-- ======================= -->
         <!--  VIEW 3: RESULTS PAGE   -->
         <!-- ======================= -->
-        <div id="results-view" class="card hidden-view">
-            <h1>Your Results, <span id="results-view-name" class="text-amber-500">...</span></h1>
-            <p class="subtitle">Here's how you see yourself vs. how your friends see you. (<span id="response-count">0</span> responses)</p>
-            <div class="mb-8">
-                <canvas id="results-chart"></canvas>
-            </div>
-            <div class="text-center">
-                <h2 class="mt-8">Vibe Cloud</h2>
-                <div class="results-section">
-                    <div id="word-cloud-container" class="flex flex-wrap justify-center items-center gap-3"></div>
+        <div id="results-view" class="view hidden-view">
+            <div class="card">
+                <h1>Your Results, <span id="results-view-name" class="text-orange-500">...</span></h1>
+                <p class="subtitle">Here's how you see yourself vs. how your friends see you. (<span id="response-count">0</span> responses)</p>
+                <div class="mb-8">
+                    <canvas id="results-chart"></canvas>
                 </div>
-                <h2 class="mt-8">Kind Words From Friends</h2>
-                <div class="results-section text-left">
-                    <div id="kind-words-container" class="min-h-[100px] text-slate-700 italic"></div>
+                <div class="text-center">
+                    <h2 class="mt-8">Vibe Cloud</h2>
+                    <div class="results-section">
+                        <div id="word-cloud-container" class="flex flex-wrap justify-center items-center gap-3"></div>
+                    </div>
+                    <h2 class="mt-8">Kind Words From Friends</h2>
+                    <div class="results-section text-left">
+                        <div id="kind-words-container" class="min-h-[100px] text-slate-700 italic"></div>
+                    </div>
                 </div>
+                <button id="back-to-home" class="w-full mt-8 bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-lg">&larr; Create a New Link</button>
             </div>
-            <button id="back-to-home" class="w-full mt-8 bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-lg">&larr; Create a New Link</button>
         </div>
     </div>
 
@@ -323,9 +443,17 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
-        
+        // =================================================================================
+        // IMPORTANT: PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+        // It should look like:
+        // const firebaseConfig = {
+        //   apiKey: "AIzaSy...",
+        //   authDomain: "your-project.firebaseapp.com",
+        //   ...
+        // };
+        // =================================================================================
         const firebaseConfig = {
-            aapiKey: "AIzaSyAwtPTe9b1uLbkLt8DWEeK5Hugmn42jjSw",
+            apiKey: "AIzaSyAwtPTe9b1uLbkLt8DWEeK5Hugmn42jjSw",
             authDomain: "mental-health-checkin-97bc6.firebaseapp.com",
             projectId: "mental-health-checkin-97bc6",
             storageBucket: "mental-health-checkin-97bc6.firebasestorage.app",
@@ -339,23 +467,30 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- DOM ELEMENTS (No changes here) ---
+        // --- DOM ELEMENTS ---
+        const welcomeView = document.getElementById('welcome-view');
         const createView = document.getElementById('create-view');
+        const linkView = document.getElementById('link-view');
         const friendView = document.getElementById('friend-view');
         const resultsView = document.getElementById('results-view');
+
+        const getStartedBtn = document.getElementById('get-started-btn');
+        
         const selfAssessmentForm = document.getElementById('self-assessment-form');
         const friendAssessmentForm = document.getElementById('friend-assessment-form');
-        const linkGenerationSection = document.getElementById('link-generation-section');
-        const shareLinkBox = document.getElementById('share-link-box');
-        const copyLinkButton = document.getElementById('copy-link-button');
-        const viewResultsFromCreate = document.getElementById('view-results-from-create');
         const backToHomeButton = document.getElementById('back-to-home');
+        const formErrorDiv = document.getElementById('form-error');
         let chartInstance = null;
         
         const showView = (viewToShow) => {
+            // Hide all views first
+            welcomeView.classList.add('hidden-view');
             createView.classList.add('hidden-view');
+            linkView.classList.add('hidden-view');
             friendView.classList.add('hidden-view');
             resultsView.classList.add('hidden-view');
+            
+            // Show the requested view
             viewToShow.classList.remove('hidden-view');
         };
 
@@ -364,7 +499,7 @@
             const userId = params.get('user');
 
             if (userId) {
-                // Friend is visiting a link. Fetch data from Firestore.
+                // Friend is visiting a link.
                 const userDocRef = doc(db, "users", userId);
                 const docSnap = await getDoc(userDocRef);
                 if (docSnap.exists()) {
@@ -372,7 +507,7 @@
                     showView(friendView);
                 } else {
                     alert("This user link is invalid. Please check the URL.");
-                    showView(createView);
+                    showView(welcomeView);
                 }
             } else {
                 // Regular user. Check if they have a previous session.
@@ -381,24 +516,43 @@
                     await renderResults(lastUserId);
                     showView(resultsView);
                 } else {
-                     showView(createView);
+                     showView(welcomeView); // Start at the welcome page
                 }
             }
         };
         
-        const setupSliderListeners = (viewId) => {
+        const updateSliderFill = (slider) => {
+            const percentage = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+            slider.style.background = `linear-gradient(to right, #f97316 ${percentage}%, #f1f5f9 ${percentage}%)`;
+        };
+
+        const setupSliderListeners = (viewId, isTenScale) => {
             ['happiness', 'energy', 'stress'].forEach(metric => {
                 const slider = document.getElementById(`${viewId}-${metric}`);
                 const valueDisplay = document.getElementById(`${viewId}-${metric}-value`);
                 if (slider && valueDisplay) {
+                    // Initialize
+                    if (isTenScale) {
+                        valueDisplay.textContent = Math.round(slider.value / 10);
+                    } else {
+                         valueDisplay.textContent = `${slider.value}%`;
+                    }
+                    if(viewId === 'self') updateSliderFill(slider);
+
+                    // Add listener
                     slider.addEventListener('input', () => {
-                        valueDisplay.textContent = `${slider.value}%`;
+                        if (isTenScale) {
+                            valueDisplay.textContent = Math.round(slider.value / 10);
+                        } else {
+                            valueDisplay.textContent = `${slider.value}%`;
+                        }
+                        if(viewId === 'self') updateSliderFill(slider);
                     });
                 }
             });
         };
-        setupSliderListeners('self');
-        setupSliderListeners('friend');
+        setupSliderListeners('self', true); // Self-assessment uses 0-10 scale display
+        setupSliderListeners('friend', false); // Friend assessment uses 0-100% display
         
         const vibeButtons = document.querySelectorAll('.word-button');
         vibeButtons.forEach(button => {
@@ -409,10 +563,9 @@
         });
 
         // --- FORM SUBMISSIONS (MODIFIED FOR FIREBASE) ---
-
-        // 1. User creates their link
         selfAssessmentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            formErrorDiv.classList.add('hidden-view'); // Hide previous errors
             const submitButton = e.target.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             submitButton.textContent = 'Generating...';
@@ -420,7 +573,7 @@
             const userName = document.getElementById('user-name').value.trim();
             if (!userName) {
                 submitButton.disabled = false;
-                submitButton.textContent = 'Generate Share Link';
+                submitButton.textContent = 'Generate Link';
                 return;
             }
 
@@ -436,24 +589,23 @@
                 friendAssessments: []
             };
 
-            // Save to Firestore
             try {
                 await setDoc(doc(db, "users", userId), userData);
                 localStorage.setItem('lastUserId', userId); 
-
+                
                 const shareURL = `${window.location.origin}${window.location.pathname}?user=${userId}`;
-                shareLinkBox.textContent = shareURL;
-                selfAssessmentForm.classList.add('hidden-view');
-                linkGenerationSection.classList.remove('hidden-view');
+                document.getElementById('share-link-box').textContent = shareURL;
+                showView(linkView);
+
             } catch (err) {
                 console.error("Error adding document: ", err);
-                alert("Could not create your link. Check console for errors.");
+                formErrorDiv.textContent = "Error: Could not save data. Please check your Firebase config keys.";
+                formErrorDiv.classList.remove('hidden-view');
                 submitButton.disabled = false;
-                submitButton.textContent = 'Generate Share Link';
+                submitButton.textContent = 'Generate Link';
             }
         });
 
-        // 2. Friend submits their assessment
         friendAssessmentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitButton = e.target.querySelector('button[type="submit"]');
@@ -462,7 +614,6 @@
 
             const params = new URLSearchParams(window.location.search);
             const userId = params.get('user');
-
             const selectedVibeButton = document.querySelector('.word-button.selected');
             
             const friendData = {
@@ -473,7 +624,6 @@
                 kindWords: document.getElementById('kind-words').value,
             };
 
-            // Update Firestore document using arrayUnion
             try {
                 const userDocRef = doc(db, "users", userId);
                 await updateDoc(userDocRef, {
@@ -481,19 +631,23 @@
                 });
 
                 friendView.innerHTML = `
-                    <h1 class="text-2xl font-bold text-center">Thank You!</h1>
-                    <p class="subtitle">Your response has been submitted anonymously.</p>
+                    <div class="card">
+                        <h1 class="text-2xl font-bold text-center">Thank You!</h1>
+                        <p class="subtitle">Your response has been submitted anonymously.</p>
+                    </div>
                 `;
             } catch (err) {
                 console.error("Error updating document: ", err);
                 friendView.innerHTML = `
-                    <h1 class="text-2xl font-bold text-center text-red-500">Error!</h1>
-                    <p class="text-center">Could not submit your response. Please try again.</p>
+                    <div class="card">
+                        <h1 class="text-2xl font-bold text-center text-red-500">Error!</h1>
+                        <p class="text-center">Could not submit your response. Please try again.</p>
+                    </div>
                 `;
             }
         });
 
-        // --- RESULTS RENDERING (MODIFIED FOR FIREBASE) ---
+        // --- RESULTS RENDERING ---
         const renderResults = async (userId) => {
             const userDocRef = doc(db, "users", userId);
             const docSnap = await getDoc(userDocRef);
@@ -509,6 +663,27 @@
             document.getElementById('results-view-name').textContent = userData.name;
             const friendResponses = userData.friendAssessments;
             document.getElementById('response-count').textContent = friendResponses.length;
+            
+            // Check if link box already exists before adding a new one
+            if (!document.querySelector('#results-view .link-box')) {
+                const shareLinkBox = document.createElement('div');
+                shareLinkBox.className = 'link-box text-center text-sm my-4';
+                shareLinkBox.textContent = `${window.location.origin}${window.location.pathname}?user=${userId}`;
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'w-full mt-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg';
+                copyBtn.textContent = 'Copy Share Link';
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(shareLinkBox.textContent).then(() => {
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(() => { copyBtn.textContent = 'Copy Share Link' }, 2000);
+                    });
+                };
+                const subtitle = document.querySelector('#results-view .subtitle');
+                subtitle.after(shareLinkBox);
+                shareLinkBox.after(copyBtn);
+            }
+
 
             const avgHappiness = friendResponses.reduce((sum, res) => sum + res.happiness, 0) / (friendResponses.length || 1);
             const avgEnergy = friendResponses.reduce((sum, res) => sum + res.energy, 0) / (friendResponses.length || 1);
@@ -525,39 +700,33 @@
                     datasets: [{
                         label: 'How You See Yourself',
                         data: [userData.selfAssessment.happiness, userData.selfAssessment.energy, 100 - userData.selfAssessment.stress],
-                        backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                        borderColor: 'rgba(239, 68, 68, 1)',
-                        pointBackgroundColor: 'rgba(239, 68, 68, 1)',
+                        backgroundColor: 'rgba(248, 118, 84, 0.2)',
+                        borderColor: 'rgba(248, 118, 84, 1)',
+                        pointBackgroundColor: 'rgba(248, 118, 84, 1)',
                         borderWidth: 2
                     }, {
                         label: `Friends' Perception (${friendResponses.length})`,
                         data: [avgHappiness, avgEnergy, 100 - avgStress],
-                         backgroundColor: 'rgba(245, 158, 11, 0.2)',
-                        borderColor: 'rgba(245, 158, 11, 1)',
-                        pointBackgroundColor: 'rgba(245, 158, 11, 1)',
+                         backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                        borderColor: 'rgba(249, 115, 22, 1)',
+                        pointBackgroundColor: 'rgba(249, 115, 22, 1)',
                         borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
-                    scales: {
-                        r: {
-                            angleLines: { display: false },
-                            suggestedMin: 0,
-                            suggestedMax: 100,
-                            pointLabels: { font: { size: 14, weight: 'bold' } }
-                        }
-                    }
+                    scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100, pointLabels: { font: { size: 14, weight: 'bold' } } } }
                 }
             });
 
+            // Vibe Cloud
             const vibeCounts = friendResponses.reduce((acc, res) => {
                 if(res.vibe) acc[res.vibe] = (acc[res.vibe] || 0) + 1;
                 return acc;
             }, {});
             const wordCloudContainer = document.getElementById('word-cloud-container');
             wordCloudContainer.innerHTML = '';
-             if (Object.keys(vibeCounts).length === 0) {
+            if (Object.keys(vibeCounts).length === 0) {
                 wordCloudContainer.innerHTML = `<span class="text-slate-500 p-4">No vibe words submitted yet.</span>`;
             } else {
                 for (const [vibe, count] of Object.entries(vibeCounts)) {
@@ -569,6 +738,7 @@
                 }
             }
 
+            // Kind Words
             const kindWordsContainer = document.getElementById('kind-words-container');
             kindWordsContainer.innerHTML = '';
             const kindWords = friendResponses.map(r => r.kindWords).filter(w => w);
@@ -584,51 +754,45 @@
             }
         };
 
-        // --- NAVIGATION BUTTONS (No changes here) ---
-        copyLinkButton.addEventListener('click', () => {
-            const linkToCopy = shareLinkBox.textContent;
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(linkToCopy).then(() => {
-                    copyLinkButton.textContent = 'Copied!';
-                    setTimeout(() => { copyLinkButton.textContent = 'Copy Link'; }, 2000);
-                });
-            } else {
-                const textArea = document.createElement('textarea');
-                textArea.value = linkToCopy;
-                textArea.style.position = 'fixed';
-                textArea.style.top = '-9999px';
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    copyLinkButton.textContent = 'Copied!';
-                    setTimeout(() => { copyLinkButton.textContent = 'Copy Link'; }, 2000);
-                } catch (err) {
-                    console.error('Fallback copy failed:', err);
-                }
-                document.body.removeChild(textArea);
-            }
+        // --- NAVIGATION BUTTONS ---
+        getStartedBtn.addEventListener('click', () => {
+            showView(createView);
         });
 
-        viewResultsFromCreate.addEventListener('click', async () => {
+        document.getElementById('copy-link-button').addEventListener('click', () => {
+            const linkToCopy = document.getElementById('share-link-box').textContent;
+            navigator.clipboard.writeText(linkToCopy).then(() => {
+                document.getElementById('copy-link-button').textContent = 'Copied!';
+                setTimeout(() => { document.getElementById('copy-link-button').textContent = 'Copy Link'; }, 2000);
+            });
+        });
+
+        document.getElementById('view-results-from-link-page').addEventListener('click', async () => {
             const lastUserId = localStorage.getItem('lastUserId');
             if (lastUserId) {
                 await renderResults(lastUserId);
                 showView(resultsView);
             }
         });
-
+        
         backToHomeButton.addEventListener('click', () => {
             localStorage.removeItem('lastUserId');
             window.history.pushState({}, document.title, window.location.pathname);
-            showView(createView);
-            selfAssessmentForm.classList.remove('hidden-view');
-            linkGenerationSection.classList.add('hidden-view');
             selfAssessmentForm.reset();
             ['happiness', 'energy', 'stress'].forEach(metric => {
-                document.getElementById(`self-${metric}-value`).textContent = '50%';
+                 const slider = document.getElementById(`self-${metric}`);
+                 const valueDisplay = document.getElementById(`self-${metric}-value`);
+                 slider.value = 50;
+                 valueDisplay.textContent = '5';
+                 updateSliderFill(slider);
             });
+            // Also reset results page link box if it exists
+            const existingLinkBox = document.querySelector('#results-view .link-box');
+            if(existingLinkBox) existingLinkBox.parentElement.removeChild(existingLinkBox);
+            const existingCopyBtn = document.querySelector('#results-view .w-full.mt-2');
+            if(existingCopyBtn) existingCopyBtn.parentElement.removeChild(existingCopyBtn);
+
+            showView(welcomeView); // Go back to welcome screen
         });
 
         // --- INITIALIZATION ---
